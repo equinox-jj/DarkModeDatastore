@@ -3,8 +3,10 @@ package com.darkmodedatastore
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.darkmodedatastore.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,9 +35,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupListener() {
         binding.sMain.setOnCheckedChangeListener { _, isChecked ->
             lifecycleScope.launch {
-                when (isChecked) {
-                    true -> viewModel.setTheme(true)
-                    false -> viewModel.setTheme(false)
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    when (isChecked) {
+                        true -> viewModel.setTheme(true)
+                        false -> viewModel.setTheme(false)
+                    }
                 }
             }
         }
